@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var table = 2
+    @State private var questions = 0
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            Text("Which table you'd like to practice today")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            
+            Stepper("Select table", value: $table, in: 2...12)
         }
         .padding()
     }
