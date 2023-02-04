@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var table = 2
     @State private var questionsToBeAsked = 5
+    @State private var randomNumber = Int.random(in: 1...12)
     
     let questions = [5, 10, 20]
     
@@ -19,8 +20,7 @@ struct ContentView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
-            Stepper("Up to...", value: $table, in: 2...12)
-            Text("Selected table \(table)")
+            Stepper("Practice table of \(table)", value: $table, in: 2...12)
             
             Text("How many questions you'd like to practice")
                 .font(.subheadline)
@@ -32,6 +32,10 @@ struct ContentView: View {
                 }
             }
             .pickerStyle(.segmented)
+            
+            Text("How much is \(table) x \(randomNumber)")
+            
+            
         }
         .padding()
     }
