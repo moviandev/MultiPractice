@@ -7,51 +7,46 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @State private var table = 2
-    @State private var questionsToBeAsked = 5
-    @State private var randomNumber = Int.random(in: 1...12)
-    @State private var answer = 0
-    @State private var askedQuestions = [String: Bool]()
+struct Question {
+    var multiplicant: Int
+    var multiplicator: Int
     
-    let questions = [5, 10, 20]
+    var product: Int {
+        multiplicant * multiplicator
+    }
+    
+    var question: String {
+        "\(multiplicant) x \(multiplicator)"
+    }
+}
+
+struct ContentView: View {
+    @State private var rounds = 5
+    @State private var table = 2
+    @State private var questionNumber = Int.random(in: 0..<2)
+    
+    var questions: [Question] {
+        generateQuestions(rounds: rounds, table: table).shuffled()
+    }
+    
+    let roundsQuantity = [5, 10, 20]
     
     var body: some View {
         VStack {
-            Text("Select the multiplication table you'd like to practice")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            
-            Stepper("Practice table of \(table)", value: $table, in: 2...12)
-            
-            Text("How many questions you'd like to practice")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            
-            Picker("Select questions", selection: $questionsToBeAsked) {
-                ForEach(questions, id: \.self) {
-                    Text($0, format: .number)
-                }
-            }
-            .pickerStyle(.segmented)
-            
-            let questionAsked = "\(table) x \(randomNumber)"
-            
-            Text("How much is \(questionAsked)")
-            
-            TextField("Your answer", value: $answer, format: .number)
-                .keyboardType(.numberPad)
-                .onSubmit {
-                    checkAnswer(questionAsked)
-                }
         }
         .padding()
     }
     
-    func checkAnswer(_ questionAsked: String) {
-        askedQuestions[questionAsked] = answer % table == 0
+    func generateQuestions(rounds: Int, table: Int) -> [Question] {
+        var questions = [Question]()
         
+        for _ in 0..<rounds {
+            questions.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
+        }
+        
+        return questions
     }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
