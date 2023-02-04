@@ -16,7 +16,7 @@ struct Question {
     }
     
     var question: String {
-        "\(multiplicant) x \(multiplicator)"
+        "How much is... \(multiplicant) x \(multiplicator)"
     }
 }
 
@@ -24,15 +24,54 @@ struct ContentView: View {
     @State private var rounds = 5
     @State private var table = 2
     @State private var questionNumber = Int.random(in: 0..<2)
+    @State private var answer = 0
     
-    var questions: [Question] {
-        generateQuestions(rounds: rounds, table: table).shuffled()
+     var questions: [Question] {
+        var questionList = [Question]()
+        
+         for _ in 0..<rounds {
+            questionList.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
+        }
+        
+        return questionList
     }
     
     let roundsQuantity = [5, 10, 20]
     
     var body: some View {
         VStack {
+            Spacer()
+            Text("MultiPractice")
+                .font(.largeTitle.bold())
+                .foregroundColor(.indigo)
+            
+            VStack(spacing: 15) {
+                Spacer()
+                Text("Choose how many questions you want")
+                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+                
+                Picker("Questions", selection: $rounds) {
+                    ForEach(roundsQuantity, id: \.self) {
+                        Text($0, format: .number)
+                    }
+                }
+                .pickerStyle(.segmented)
+                
+                Spacer()
+                
+                Stepper("Choose the multiplication table", value: $table, in: 2...12)
+                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+
+                
+                Text(questions[questionNumber].question)
+                
+                TextField("Your answer", value: $answer, format: .number)
+                
+                Spacer()
+                
+            }
         }
         .padding()
     }
