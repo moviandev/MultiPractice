@@ -11,6 +11,8 @@ struct ContentView: View {
     @State private var table = 2
     @State private var questionsToBeAsked = 5
     @State private var randomNumber = Int.random(in: 1...12)
+    @State private var answer = 0
+    @State private var askedQuestions = [String: Bool]()
     
     let questions = [5, 10, 20]
     
@@ -33,11 +35,22 @@ struct ContentView: View {
             }
             .pickerStyle(.segmented)
             
-            Text("How much is \(table) x \(randomNumber)")
+            let questionAsked = "\(table) x \(randomNumber)"
             
+            Text("How much is \(questionAsked)")
             
+            TextField("Your answer", value: $answer, format: .number)
+                .keyboardType(.numberPad)
+                .onSubmit {
+                    checkAnswer(questionAsked)
+                }
         }
         .padding()
+    }
+    
+    func checkAnswer(_ questionAsked: String) {
+        askedQuestions[questionAsked] = answer % table == 0
+        
     }
 }
 
