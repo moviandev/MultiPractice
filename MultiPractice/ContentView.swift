@@ -82,8 +82,8 @@ struct ContentView: View {
             print("----------")
         }
 
-        if questions[questionNumber].product == questions[answer].product {
-            score += 1
+        if questions[questionNumber].product == answer {
+            score += 0
         } else {
             score -= score > 1 ? 1 : 0
         }
@@ -94,7 +94,7 @@ struct ContentView: View {
          for _ in 0..<rounds {
              question.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
         }
-        return question
+        return question.shuffled()
     }
     
 }
