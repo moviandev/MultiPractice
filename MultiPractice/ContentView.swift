@@ -23,18 +23,10 @@ struct Question {
 struct ContentView: View {
     @State private var rounds = 5
     @State private var table = 2
-    @State private var questionNumber = Int.random(in: 0..<2)
-    @State private var answer = 0
+    @State private var questionNumber = Int.random(in: 0...2)
+    @State private var score = 0
     
-     var questions: [Question] {
-        var questionList = [Question]()
-        
-         for _ in 0..<rounds {
-            questionList.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
-        }
-        
-        return questionList
-    }
+    var questions: [Question] { startGame() }
     
     let roundsQuantity = [5, 10, 20]
     
@@ -67,23 +59,42 @@ struct ContentView: View {
                 
                 Text(questions[questionNumber].question)
                 
-                TextField("Your answer", value: $answer, format: .number)
+                ForEach(0..<3) { question in
+                    Button("\(questions[question].product)") {
+                        validateAnswer(answer: question)
+                    }
+                }
                 
                 Spacer()
+                
+                Text("Your current score \(score)")
                 
             }
         }
         .padding()
+
     }
     
-    func generateQuestions(rounds: Int, table: Int) -> [Question] {
-        var questions = [Question]()
-        
-        for _ in 0..<rounds {
-            questions.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
+    func validateAnswer(answer: Int) {
+        for val in questions {
+            print(val.question)
+            print(val.product)
+            print("----------")
         }
-        
-        return questions
+
+        if questions[questionNumber].product == questions[answer].product {
+            score += 1
+        } else {
+            score -= score > 1 ? 1 : 0
+        }
+    }
+    
+    func startGame() -> [Question] {
+        var question = [Question]()
+         for _ in 0..<rounds {
+             question.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
+        }
+        return question
     }
     
 }
