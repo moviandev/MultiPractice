@@ -26,62 +26,65 @@ struct ContentView: View {
     @State private var questionNumber = Int.random(in: 0...2)
     @State private var score = 0
     
-    var questions: [Question] { startGame() }
+    @State private var questions: [Question] = []
+    @State private var question = ""
+    @State private var answers = []
     
     let roundsQuantity = [5, 10, 20]
     
     var body: some View {
-        VStack {
-            Spacer()
-            Text("MultiPractice")
-                .font(.largeTitle.bold())
-                .foregroundColor(.indigo)
-            
-            VStack(spacing: 15) {
+        NavigationView {
+            VStack {
                 Spacer()
-                Text("Choose how many questions you want")
-                    .foregroundColor(.secondary)
-                    .font(.subheadline)
+                Text("MultiPractice")
+                    .font(.largeTitle.bold())
+                    .foregroundColor(.indigo)
                 
-                Picker("Questions", selection: $rounds) {
-                    ForEach(roundsQuantity, id: \.self) {
-                        Text($0, format: .number)
+                VStack(spacing: 15) {
+                    Spacer()
+                    
+                    Text("Choose how many questions you want")
+                        .foregroundColor(.secondary)
+                        .font(.subheadline)
+                    
+                    Picker("Questions", selection: $rounds) {
+                        ForEach(roundsQuantity, id: \.self) {
+                            Text($0, format: .number)
+                        }
                     }
+                    .pickerStyle(.segmented)
+                    
+                    Spacer()
+                    
+                    Stepper("Choose the multiplication table", value: $table, in: 2...12)
+                        .foregroundColor(.secondary)
+                        .font(.subheadline)
+                    
+                    
+//                    Text(questions[questionNumber].question)
+                    //
+                    //                ForEach(0..<3) { question in
+                    //                    Button("\(questions[question].product)") {
+                    //                        validateAnswer(answer: question)
+                    //                    }
+                    //                }
+                    
+                    Spacer()
+                    
+                    Text("Your current score \(score)")
+                    
                 }
-                .pickerStyle(.segmented)
-                
-                Spacer()
-                
-                Stepper("Choose the multiplication table", value: $table, in: 2...12)
-                    .foregroundColor(.secondary)
-                    .font(.subheadline)
-
-                
-                Text(questions[questionNumber].question)
-                
-                ForEach(0..<3) { question in
-                    Button("\(questions[question].product)") {
-                        validateAnswer(answer: question)
-                    }
-                }
-                
-                Spacer()
-                
-                Text("Your current score \(score)")
-                
             }
         }
         .padding()
-
+        .onAppear {
+            for _ in 0..<20 {
+                questions.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
+            }
+        }
     }
     
     func validateAnswer(answer: Int) {
-        for val in questions {
-            print(val.question)
-            print(val.product)
-            print("----------")
-        }
-
         if questions[questionNumber].product == answer {
             score += 0
         } else {
@@ -89,12 +92,22 @@ struct ContentView: View {
         }
     }
     
-    func startGame() -> [Question] {
-        var question = [Question]()
-         for _ in 0..<rounds {
-             question.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
+    func startGame() {
+        var q = [Question]()
+        for _ in 0..<rounds {
+            q.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
         }
-        return question.shuffled()
+        questions = q
+        question = questions[questionNumber].question
+        
+        for val in questions {
+            answers.append(val.product)
+        }
+        
+        
+        for val in questions {
+            print(val.question)
+        }
     }
     
 }
