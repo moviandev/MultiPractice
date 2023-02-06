@@ -28,7 +28,6 @@ struct ContentView: View {
     
     @State private var questions: [Question] = []
     @State private var question = ""
-    @State private var answers = []
     
     let roundsQuantity = [5, 10, 20]
     
@@ -61,13 +60,13 @@ struct ContentView: View {
                         .font(.subheadline)
                     
                     
-//                    Text(questions[questionNumber].question)
-                    //
-                    //                ForEach(0..<3) { question in
-                    //                    Button("\(questions[question].product)") {
-                    //                        validateAnswer(answer: question)
-                    //                    }
-                    //                }
+                    Text(question)
+                    
+                    ForEach(0..<3) { question in
+                        Button("\(questions[question].product)") {
+                            validateAnswer(answer: question)
+                        }
+                    }
                     
                     Spacer()
                     
@@ -77,37 +76,23 @@ struct ContentView: View {
             }
         }
         .padding()
-        .onAppear {
-            for _ in 0..<20 {
-                questions.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
-            }
-        }
+        .onAppear(perform: startGame)
     }
     
     func validateAnswer(answer: Int) {
-        if questions[questionNumber].product == answer {
-            score += 0
+        if questions[questionNumber].product == questions[answer].product {
+            score += 1
         } else {
             score -= score > 1 ? 1 : 0
         }
     }
     
     func startGame() {
-        var q = [Question]()
         for _ in 0..<rounds {
-            q.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
+            questions.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
         }
-        questions = q
+        
         question = questions[questionNumber].question
-        
-        for val in questions {
-            answers.append(val.product)
-        }
-        
-        
-        for val in questions {
-            print(val.question)
-        }
     }
     
 }
