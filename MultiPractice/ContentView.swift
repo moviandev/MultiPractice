@@ -62,9 +62,11 @@ struct ContentView: View {
                     
                     Text(question)
                     
-                    ForEach(0..<3) { question in
-                        Button("\(questions[question].product)") {
-                            validateAnswer(answer: question)
+                    HStack(spacing: 50) {
+                        ForEach(0..<3) { question in
+                            Button("\(questions[question].product)") {
+                                validateAnswer(answer: question)
+                            }
                         }
                     }
                     
