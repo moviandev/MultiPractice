@@ -37,46 +37,69 @@ struct ContentView: View {
     let roundsQuantity = [5, 10, 20]
     
     var body: some View {
-        NavigationView {            
-            VStack(spacing: 20) {
-                Text("MultiPractice")
-                    .font(.largeTitle.bold())
-                    .foregroundColor(.indigo)
-                
-                Text("Choose how many questions you want")
-                    .foregroundColor(.secondary)
-                    .font(.subheadline)
-                Picker("Questions", selection: $rounds) {
-                    ForEach(roundsQuantity, id: \.self) {
-                        Text($0, format: .number)
+        NavigationView {
+            ZStack {
+                LinearGradient(gradient: Gradient(colors: [.cyan, .teal]), startPoint: .leading, endPoint: .top)                    .ignoresSafeArea()
+
+                VStack(spacing: 20) {
+                    Text("MultiPractice")
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(.tint)
+                    
+                    Text("Choose how many questions you want")
+                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.tint)
+                        .font(.subheadline)
+                    Picker("Questions", selection: $rounds) {
+                        ForEach(roundsQuantity, id: \.self) {
+                            Text($0, format: .number)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    
+                    VStack {
+                        Stepper("Current table \(table)", value: $table, in: 2...12)
+                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.tint)
+                            .font(.subheadline)
+                        
+                        
+                        Text(question)
+                            .foregroundStyle(.primary)
+                            .foregroundStyle(.tint)
+                        
+                        TextField("Your answer", value: $answer, format: .number)
+                            .onSubmit {
+                                validateAnswer(userAnswer: answer)
+                            }
+                            .padding(4)
+                            .foregroundStyle(.secondary)
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(5)
+                            
+                        
+                        Text("Your current score: \(score)")
+                            .foregroundStyle(.primary)
+                            .foregroundStyle(.tint)
                     }
                 }
-                .pickerStyle(.segmented)
-                
-                VStack {
-                    Stepper("Current table \(table)", value: $table, in: 2...12)
-                        .foregroundColor(.secondary)
-                        .font(.subheadline)
-                    
-                    
-                    Text(question)
-                    
-                    TextField("Your answer", value: $answer, format: .number)
-                        .onSubmit {
-                            validateAnswer(userAnswer: answer)
-                        }
-                    
-                    Text("Your current score \(score)")
-                }
-            }
-            .toolbar {
-                ToolbarItem {
+                .toolbar {
                     Button("Practice Again") {
                         startGame()
                     }
+                    .padding(4)
+                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.tint)
+                    .background(.thinMaterial)
+                    .cornerRadius(5)
+                    
+                    
                 }
+                .padding()
+                .background(.ultraThinMaterial)
+                .cornerRadius(20)
+
             }
-            .padding()
             
         }
         .padding()
