@@ -37,7 +37,7 @@ struct ContentView: View {
     let roundsQuantity = [5, 10, 20]
     
     var body: some View {
-        NavigationView {
+        NavigationView {            
             VStack(spacing: 20) {
                 Text("MultiPractice")
                     .font(.largeTitle.bold())
@@ -57,15 +57,15 @@ struct ContentView: View {
                     Stepper("Current table \(table)", value: $table, in: 2...12)
                         .foregroundColor(.secondary)
                         .font(.subheadline)
-
-
+                    
+                    
                     Text(question)
-
+                    
                     TextField("Your answer", value: $answer, format: .number)
                         .onSubmit {
                             validateAnswer(userAnswer: answer)
                         }
-
+                    
                     Text("Your current score \(score)")
                 }
             }
@@ -76,8 +76,9 @@ struct ContentView: View {
                     }
                 }
             }
+            .padding()
+            
         }
-
         .padding()
         .onAppear(perform: startGame)
         .alert(alertTitle, isPresented: $showingEndGame) {
@@ -87,6 +88,7 @@ struct ContentView: View {
         } message: {
             Text(alertMessage)
         }
+        .background(.linearGradient(Gradient(colors: [.cyan, .teal]), startPoint: .leading, endPoint: .top))
     }
     
     func validateAnswer(userAnswer: Int) {
