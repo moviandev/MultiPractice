@@ -28,6 +28,8 @@ struct ContentView: View {
     @State private var answer = 0
     @State private var playedRounds = 0
     @State private var showingEndGame = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
     
     @State private var questions: [Question] = []
     @State private var question = ""
@@ -36,25 +38,22 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                Spacer()
-                Spacer()
+            VStack(spacing: 20) {
                 Text("MultiPractice")
                     .font(.largeTitle.bold())
                     .foregroundColor(.indigo)
-
-                VStack(spacing: 50) {
-                    Text("Choose how many questions you want")
-                        .foregroundColor(.secondary)
-                        .font(.subheadline)
-
-                    Picker("Questions", selection: $rounds) {
-                        ForEach(roundsQuantity, id: \.self) {
-                            Text($0, format: .number)
-                        }
+                
+                Text("Choose how many questions you want")
+                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+                Picker("Questions", selection: $rounds) {
+                    ForEach(roundsQuantity, id: \.self) {
+                        Text($0, format: .number)
                     }
-                    .pickerStyle(.segmented)
-
+                }
+                .pickerStyle(.segmented)
+                
+                VStack {
                     Stepper("Current table \(table)", value: $table, in: 2...12)
                         .foregroundColor(.secondary)
                         .font(.subheadline)
@@ -64,13 +63,10 @@ struct ContentView: View {
 
                     TextField("Your answer", value: $answer, format: .number)
                         .onSubmit {
-                            validateAnswer(answer: answer)
+                            validateAnswer(userAnswer: answer)
                         }
 
-                    Spacer()
-
                     Text("Your current score \(score)")
-
                 }
             }
             .toolbar {
@@ -84,9 +80,16 @@ struct ContentView: View {
 
         .padding()
         .onAppear(perform: startGame)
+        .alert(alertTitle, isPresented: $showingEndGame) {
+            Button("Play again") {
+                startGame()
+            }
+        } message: {
+            Text(alertMessage)
+        }
     }
     
-    func validateAnswer(answer: Int) {
+    func validateAnswer(userAnswer: Int) {
         if questions[questionNumber].product == answer {
             score += 1
         }
@@ -95,8 +98,16 @@ struct ContentView: View {
         
         if playedRounds == rounds {
             showingEndGame = true
+            if score > (rounds / 2) {
+                defineAlert(title: "Congrats!!!", message: "You got a great score \(score). Keep up with the great work!")
+            } else {
+                defineAlert(title: "You always cna try again", message: "You should practice a little bit! Your current score \(score)")
+            }
+            
+            score = 0
         }
         
+        answer = 0
         askNewQuestion()
     }
     
@@ -116,6 +127,11 @@ struct ContentView: View {
         questions.shuffle()
         questionNumber = Int.random(in: 0...2)
         question = questions[questionNumber].question
+    }
+    
+    func defineAlert(title: String, message: String) {
+        alertTitle = title
+        alertMessage = message
     }
     
 }
