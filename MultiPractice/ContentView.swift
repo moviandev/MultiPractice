@@ -27,6 +27,7 @@ struct ContentView: View {
     @State private var score = 0
     @State private var answer = 0
     @State private var playedRounds = 0
+    @State private var showingEndGame = false
     
     @State private var questions: [Question] = []
     @State private var question = ""
@@ -75,10 +76,7 @@ struct ContentView: View {
             .toolbar {
                 ToolbarItem {
                     Button("Practice Again") {
-                        print(question)
                         startGame()
-                        print(question)
-                        print(table)
                     }
                 }
             }
@@ -91,9 +89,15 @@ struct ContentView: View {
     func validateAnswer(answer: Int) {
         if questions[questionNumber].product == answer {
             score += 1
-        } else {
-            score -= score > 1 ? 1 : 0
         }
+        
+        playedRounds += 1
+        
+        if playedRounds == rounds {
+            showingEndGame = true
+        }
+        
+        askNewQuestion()
     }
     
     func startGame() {
@@ -105,6 +109,12 @@ struct ContentView: View {
             questions.append(Question(multiplicant: Int.random(in: 2...12), multiplicator: table))
         }
         
+        question = questions[questionNumber].question
+    }
+    
+    func askNewQuestion() {
+        questions.shuffle()
+        questionNumber = Int.random(in: 0...2)
         question = questions[questionNumber].question
     }
     
